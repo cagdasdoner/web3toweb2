@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <title>Web3 Wallet Connect</title>
+</head>
+<body>
+    <button id="connectWallet">Connect Wallet</button>
+    <button id="disconnectWallet" style="display:none;">Disconnect Wallet</button><br><br>
+
+    <div id="walletAddress">Connected Wallet Address: Not Connected</div><br>
+
+    <input type="text" id="messageToSign" placeholder="Enter message to sign">
+    <button id="signMessage">Sign Message</button><br><br>
+
+    <div id="signatureResult">Signature will appear here.</div>
+    <div id="verificationResult"></div>
+    
+
+    <script src="index.js"></script>
+</body>
+</html>
