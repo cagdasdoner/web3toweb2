@@ -1,9 +1,8 @@
 const connectWalletButton = document.getElementById('connectWallet');
 const disconnectWalletButton = document.getElementById('disconnectWallet');
 const walletAddressDisplay = document.getElementById('walletAddress');
-const signMessageButton = document.getElementById('signMessage');
-const messageInput = document.getElementById('messageToSign');
 const signatureResult = document.getElementById('signatureResult');
+const serverAuthenticationButton = document.getElementById('serverAuthentication');
 
 let provider, signer;
 let connectedWalletAddress = null;
@@ -47,10 +46,11 @@ const toggleConnectButton = (showConnect) => {
 connectWalletButton.addEventListener('click', connectWallet);
 disconnectWalletButton.addEventListener('click', disconnectWallet);
 
-signMessageButton.addEventListener('click', async () => {
+serverAuthenticationButton.addEventListener('click', async () => {
     if (signer && connectedWalletAddress) {
-        const message = messageInput.value;
         try {
+            // Use epoch in the data to be signed to prevent replay attacks.
+            const message = `${Date.now()}`;
             const signature = await signer.signMessage(message);
             signatureResult.textContent = `Signed Message: ${signature}`;
 
@@ -66,7 +66,13 @@ signMessageButton.addEventListener('click', async () => {
             .then(data => {
                 const verificationResult = document.getElementById('verificationResult');
                 if (data.success) {
-                    verificationResult.textContent = 'Signature verified successfully.';
+                    verificationResult.textContent = 'Signature verified successfully';
+                    const authorizationResult = document.getElementById('authorizationResult');
+                    if (data.authorized) {
+                        authorizationResult.textContent = 'Authorized.';
+                    } else {
+                        authorizationResult.textContent = 'UnAuthorized!';
+                    }
                 } else {
                     verificationResult.textContent = 'Verification failed!';
                 }
