@@ -7,15 +7,16 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const contractAddress = '0xF9292b8E8f8D6AAb9e9721b046F3112F39f3e000';
-const NETWORK = 'goerli';
-const INFURA_KEY = 'INFURA_KEY_HERE';
+const INFURA_KEY = 'SET_YOUR_API_KEY_HERE';
+/* Deployed on: Sepolia */
+const contractAddress = '0x9fff571b67f72e22a6d37eb782bff2400add06d4';
+const apiURL = "https://sepolia.infura.io/v3/" + INFURA_KEY;
 
 /* DE-Centralized Database Operations */
 async function isAddressAuthorizedOnChain(address) {
     const contractABI = require('./abis/AccessDatabaseABI.json');
-    const provider = new ethers.providers.InfuraProvider(NETWORK, INFURA_KEY);
-    const contract = new ethers.Contract(contractAddress, contractABI, provider);
+    const apiProvider = new ethers.providers.JsonRpcProvider(apiURL);
+    const contract = new ethers.Contract(contractAddress, contractABI, apiProvider);
 
     return contract.isAuthorized(address);
 }
@@ -32,7 +33,7 @@ function isAddressAuthorizedServerSide(address) {
     return authorizedWalletsServerSideDatabase.includes(address);
 }
 
-app.post('/verifySignature', async (req, res) => {
+app.post('/verifyUser', async (req, res) => {
     const { message, signature, address } = req.body;
     console.log(message, signature, address);
     try {
@@ -43,7 +44,7 @@ app.post('/verifySignature', async (req, res) => {
             //var isAuthorized = isAddressAuthorizedServerSide(address.toLowerCase())
             var isAuthorized = await isAddressAuthorizedOnChain(address.toLowerCase());
             if (isAuthorized) {
-                // Take server side action here if authorized.
+                // Take server side (Trusted Environment) action here if authorized.
             }
             res.json({ 
                 success: true,
